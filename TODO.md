@@ -4,7 +4,7 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 
 ## Setup
 
-- [ ] Initialiser le repo (structure web + mobile + backend managé), README minimal
+- [x] Initialiser le repo (structure web + mobile + backend managé), README minimal
 - [ ] Créer le projet backend managé (auth, base de données, storage)
 - [ ] Configurer l'environnement local (variables d'env, connexion au backend managé)
 - [ ] Mettre en place le squelette web (Next.js) qui affiche une page de test connectée au backend
