@@ -11,10 +11,21 @@ Application de mise en relation pour sociétés de ménage (mobile + web). Trois
 
 ```
 apps/
-  web/      # Interface web (Next.js) — squelette à venir
+  web/      # Interface web (Next.js, App Router, TypeScript)
   mobile/   # Interface mobile (React Native) — squelette à venir
-backend/    # Backend managé (type Supabase) : config, migrations, fonctions — à venir
+backend/    # Backend managé (type Supabase) : config, migrations, fonctions
 ```
+
+## Lancer le web en local
+
+```bash
+cd apps/web
+npm install
+cp .env.example .env.local   # puis renseigner les valeurs Supabase
+npm run dev
+```
+
+La page d'accueil affiche le statut de connexion au backend Supabase.
 
 ## Variables d'environnement
 
