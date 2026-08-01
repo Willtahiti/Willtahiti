@@ -16,6 +16,10 @@ apps/
 backend/    # Backend managé (type Supabase) : config, migrations, fonctions — à venir
 ```
 
+## Variables d'environnement
+
+Chaque app a un `.env.example` documentant les variables Supabase attendues (`apps/web/.env.example`, `apps/mobile/.env.example`). Copier vers `.env.local` (web) ou `.env` (mobile) et remplir avec les valeurs du projet Supabase (local via `supabase start`, ou celui du dashboard une fois le projet hébergé créé — voir `backend/README.md`).
+
 ## Stack
 
 - Web : Next.js

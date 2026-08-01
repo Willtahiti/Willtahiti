@@ -6,7 +6,7 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 
 - [x] Initialiser le repo (structure web + mobile + backend managé), README minimal
 - [ ] Créer le projet backend managé (auth, base de données, storage)
-- [ ] Configurer l'environnement local (variables d'env, connexion au backend managé)
+- [x] Configurer l'environnement local (variables d'env, connexion au backend managé) — `.env.example` en place ; connexion réelle en attente du projet Supabase hébergé (tâche précédente)
 - [ ] Mettre en place le squelette web (Next.js) qui affiche une page de test connectée au backend
 - [ ] Mettre en place le squelette mobile (React Native) qui affiche un écran de test connecté au backend
 
