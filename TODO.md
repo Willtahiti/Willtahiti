@@ -33,7 +33,7 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 
 ## Messagerie
 
-- [ ] Créer une conversation liée à une relation client ↔ aide-ménagère
+- [x] Créer une conversation liée à une relation client ↔ aide-ménagère — migration `20260802131500_create_conversations_table.sql` : table `conversations`, RLS (participants uniquement, création limitée aux paires ayant déjà une relation via `taches`), FK + RLS complète sur `messages`. Testé sur Postgres local : 9 scénarios (création légitime + usurpation, envoi/lecture croisée, fuite vers un tiers, usurpation d'expéditeur) — tous corrects
 - [ ] Envoi/réception de messages texte en temps réel (web)
 - [ ] Envoi/réception de messages texte en temps réel (mobile)
 - [ ] Upload et affichage d'une photo dans la conversation (web)
