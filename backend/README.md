@@ -31,4 +31,8 @@ npx supabase db push
 
 ## Migrations
 
-Les migrations SQL vivront dans `supabase/migrations/` (créées via `npx supabase migration new <nom>`). Aucune migration pour l'instant — les tables (`users`, `societes`, `contrats`, `taches`, `messages`) arrivent dans les tâches suivantes du TODO.
+Les migrations SQL vivent dans `supabase/migrations/` (créées via `npx supabase migration new <nom>`).
+
+- `20260802121601_create_users_table.sql` — table `users` (profil applicatif lié à `auth.users`, rôle aide_menagere/gerant/client)
+
+Les tables restantes (`societes`, `contrats`, `taches`, `messages`) arrivent dans les tâches suivantes du TODO.
