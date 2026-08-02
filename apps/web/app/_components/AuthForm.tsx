@@ -62,9 +62,14 @@ export function AuthForm({ role, title }: { role: Role; title: string }) {
         <h1>{title}</h1>
         <p>✅ Connecté en tant que {user.email}</p>
         {role === "client" && (
-          <p>
-            <a href="/client/taches">Voir mes tâches</a>
-          </p>
+          <>
+            <p>
+              <a href="/client/taches">Voir mes tâches</a>
+            </p>
+            <p>
+              <a href="/client/conversation">Voir mes messages</a>
+            </p>
+          </>
         )}
         <button onClick={handleSignOut}>Se déconnecter</button>
       </main>
