@@ -13,7 +13,7 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 ## Modèle de données & auth
 
 - [x] Créer la table `users` (rôle: aide_menagere / gerant / client) — migration `backend/supabase/migrations/20260802121601_create_users_table.sql`, RLS activé (chaque utilisateur voit/modifie sa propre ligne)
-- [ ] Créer la table `societes`
+- [x] Créer la table `societes` — migration `backend/supabase/migrations/20260802121716_create_societes_table.sql`, FK `users.societe_id` ajoutée, RLS (visible par ses membres)
 - [ ] Créer la table `contrats` (societe_id, client_id, taches_incluses)
 - [ ] Créer la table `taches` (client_id, aide_menagere_id, contrat_id, description, statut, verrouillee)
 - [ ] Créer la table `messages` (conversation_id, expediteur_id, contenu_texte, photo_url, horodatage)
