@@ -23,7 +23,7 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 
 ## Tâches
 
-- [ ] API : créer un contrat de test avec des tâches verrouillées pour un client donné
+- [x] API : créer un contrat de test avec des tâches verrouillées pour un client donné — script `backend/supabase/seed/seed_test_contrat.sql` (connexion Postgres directe, bypass RLS), pris deux emails déjà inscrits (client + aide-ménagère) et crée société + contrat + 3 tâches verrouillées. Testé de bout en bout sur un Postgres 16 local dans ce sandbox (migrations + trigger + seed) — voir `backend/README.md`
 - [ ] API : lister les tâches d'un client (verrouillées issues du contrat + libres)
 - [ ] API : le client ajoute une tâche libre (texte)
 - [ ] Écran web client : afficher les tâches verrouillées (non modifiables) et le formulaire d'ajout libre

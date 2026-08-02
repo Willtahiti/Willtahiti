@@ -40,4 +40,23 @@ Les migrations SQL vivent dans `supabase/migrations/` (créées via `npx supabas
 - `20260802122055_create_messages_table.sql` — table `messages` (conversation_id, expediteur_id, contenu_texte, photo_url, horodatage) ; `conversation_id` sans FK en attendant la table `conversations`
 - `20260802122500_create_handle_new_user_trigger.sql` — trigger sur `auth.users` qui crée automatiquement la ligne `public.users` avec le rôle passé dans les métadonnées d'inscription
 
-Toutes les tables du modèle simplifié (voir ARCHITECTURE.md) sont créées. La suite du TODO porte sur l'auth restante, les règles d'accès complètes et la messagerie temps réel.
+Toutes les tables du modèle simplifié (voir ARCHITECTURE.md) sont créées, ainsi que les règles d'accès (RLS) de base et l'auth aide-ménagère/client. La suite du TODO porte sur les API tâches et la messagerie temps réel.
+
+## Seed de test
+
+`supabase/seed/seed_test_contrat.sql` crée un contrat avec des tâches verrouillées pour un
+client et une aide-ménagère déjà inscrits (via l'app web ou mobile). Contourne volontairement
+la RLS en se connectant directement à Postgres (pas via l'API PostgREST) :
+
+```bash
+psql "postgresql://postgres:postgres@localhost:54322/postgres" \
+  -v client_email=client@example.com \
+  -v aide_menagere_email=aide-menagere@example.com \
+  -f backend/supabase/seed/seed_test_contrat.sql
+```
+
+(chaîne de connexion par défaut pour `supabase start` en local ; à remplacer par celle du
+projet hébergé sinon — dashboard Supabase > Project Settings > Database). Testé de bout en
+bout sur une instance Postgres 16 locale (hors stack Supabase) dans ce sandbox : les migrations
+s'appliquent proprement et le script crée bien la société, le contrat et les 3 tâches
+verrouillées attendues.
