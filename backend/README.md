@@ -35,5 +35,6 @@ Les migrations SQL vivent dans `supabase/migrations/` (créées via `npx supabas
 
 - `20260802121601_create_users_table.sql` — table `users` (profil applicatif lié à `auth.users`, rôle aide_menagere/gerant/client)
 - `20260802121716_create_societes_table.sql` — table `societes` (nom, palier gratuit/pro/business), FK depuis `users.societe_id`
+- `20260802121830_create_contrats_table.sql` — table `contrats` (societe_id, client_id, taches_incluses[])
 
-Les tables restantes (`contrats`, `taches`, `messages`) arrivent dans les tâches suivantes du TODO.
+Les tables restantes (`taches`, `messages`) arrivent dans les tâches suivantes du TODO.
