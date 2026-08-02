@@ -1,0 +1,34 @@
+# Backend managé (Supabase)
+
+Ce dossier contient la configuration du projet Supabase (auth, base de données Postgres, storage, realtime).
+
+## État actuel
+
+Le projet Supabase **local** est initialisé (`supabase/config.toml`). Aucun projet **hébergé** (cloud) n'est encore lié — cette étape nécessite un compte Supabase.
+
+## Développement local
+
+Prérequis : [Docker](https://docs.docker.com/get-docker/) et la [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started).
+
+```bash
+cd backend
+npx supabase start
+```
+
+Cela lance Postgres, l'API, l'auth et le storage en local, et affiche les clés (`anon key`, `service_role key`) et l'URL de l'API à utiliser dans les fichiers `.env.local` du web et du mobile.
+
+## Lier un projet hébergé (cloud)
+
+À faire une fois un compte Supabase créé :
+
+```bash
+npx supabase login
+npx supabase link --project-ref <project-ref>
+npx supabase db push
+```
+
+`<project-ref>` et les clés API sont à récupérer dans le dashboard Supabase du projet, et ne doivent jamais être commités (voir `.gitignore` à la racine).
+
+## Migrations
+
+Les migrations SQL vivront dans `supabase/migrations/` (créées via `npx supabase migration new <nom>`). Aucune migration pour l'instant — les tables (`users`, `societes`, `contrats`, `taches`, `messages`) arrivent dans les tâches suivantes du TODO.
