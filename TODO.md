@@ -25,10 +25,10 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 
 - [x] API : créer un contrat de test avec des tâches verrouillées pour un client donné — script `backend/supabase/seed/seed_test_contrat.sql` (connexion Postgres directe, bypass RLS), pris deux emails déjà inscrits (client + aide-ménagère) et crée société + contrat + 3 tâches verrouillées. Testé de bout en bout sur un Postgres 16 local dans ce sandbox (migrations + trigger + seed) — voir `backend/README.md`
 - [ ] API : lister les tâches d'un client (verrouillées issues du contrat + libres)
-- [ ] API : le client ajoute une tâche libre (texte)
+- [x] API : le client ajoute une tâche libre (texte) — policy RLS `client can insert own free tache` (migration `20260802130400_taches_write_policies.sql`) : le client ne peut créer une tâche libre que pour une aide-ménagère avec qui il a déjà une relation. Testé contre 4 tentatives de contournement (aide-ménagère sans relation, fausse tâche verrouillée, usurpation de client_id) — toutes rejetées
 - [ ] Écran web client : afficher les tâches verrouillées (non modifiables) et le formulaire d'ajout libre
 - [ ] Écran mobile aide-ménagère : afficher la liste complète des tâches d'un client (verrouillées + libres), avec statut
-- [ ] API : l'aide-ménagère peut cocher une tâche comme faite
+- [x] API : l'aide-ménagère peut cocher une tâche comme faite — policy RLS `aide_menagere can update assigned tache` + trigger `taches_prevent_protected_update` qui interdit toute modification hors `statut` (même migration). Testé : aide-ménagère assignée peut changer le statut, une autre aide-ménagère non assignée ne peut rien modifier (0 ligne), une tentative de modifier la description échoue, le client ne peut pas changer le statut
 - [ ] Test manuel bout en bout : créer un client avec contrat, ajouter une tâche libre, vérifier que l'aide-ménagère voit bien les deux types
 
 ## Messagerie

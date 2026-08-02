@@ -40,6 +40,7 @@ Les migrations SQL vivent dans `supabase/migrations/` (créées via `npx supabas
 - `20260802122055_create_messages_table.sql` — table `messages` (conversation_id, expediteur_id, contenu_texte, photo_url, horodatage) ; `conversation_id` sans FK en attendant la table `conversations`
 - `20260802122500_create_handle_new_user_trigger.sql` — trigger sur `auth.users` qui crée automatiquement la ligne `public.users` avec le rôle passé dans les métadonnées d'inscription
 - `20260802130200_grant_authenticated_privileges.sql` — GRANT explicites au rôle `authenticated` (indispensables : sans eux, les policies RLS sont inertes car le cloud Supabase actuel n'expose plus les nouvelles tables par défaut, voir `auto_expose_new_tables` dans `config.toml`)
+- `20260802130400_taches_write_policies.sql` — policies INSERT (client ajoute une tâche libre, uniquement pour une aide-ménagère avec qui il a déjà une relation) et UPDATE (aide-ménagère coche le statut d'une tâche assignée), + trigger interdisant toute modification hors `statut`
 
 Toutes les tables du modèle simplifié (voir ARCHITECTURE.md) sont créées, ainsi que les règles d'accès (RLS) de base et l'auth aide-ménagère/client. La suite du TODO porte sur les API tâches et la messagerie temps réel.
 
