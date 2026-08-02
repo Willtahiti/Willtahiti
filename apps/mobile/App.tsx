@@ -1,40 +1,119 @@
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import type { User } from '@supabase/supabase-js';
 import { getSupabaseClient } from './lib/supabaseClient';
 
-type ConnectionStatus =
-  | { state: 'not-configured' }
-  | { state: 'ok' }
-  | { state: 'error'; message: string };
+type Mode = 'inscription' | 'connexion';
 
 export default function App() {
-  const [status, setStatus] = useState<ConnectionStatus>({ state: 'not-configured' });
+  const supabase = getSupabaseClient();
+  const [mode, setMode] = useState<Mode>('inscription');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const supabase = getSupabaseClient();
-    if (!supabase) {
-      setStatus({ state: 'not-configured' });
-      return;
-    }
-    supabase.auth.getSession().then(({ error }) => {
-      setStatus(error ? { state: 'error', message: error.message } : { state: 'ok' });
+    if (!supabase) return;
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
     });
-  }, []);
+    return () => subscription.subscription.unsubscribe();
+  }, [supabase]);
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Willtahiti — écran de test</Text>
-      <Text>Statut de connexion au backend Supabase :</Text>
-      {status.state === 'not-configured' && (
+  if (!supabase) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Willtahiti — écran de test</Text>
         <Text style={styles.status}>
           ⚠️ Non configuré — copier .env.example vers .env et renseigner
           EXPO_PUBLIC_SUPABASE_URL et EXPO_PUBLIC_SUPABASE_ANON_KEY.
         </Text>
-      )}
-      {status.state === 'ok' && <Text style={styles.status}>✅ Connecté au backend Supabase.</Text>}
-      {status.state === 'error' && (
-        <Text style={styles.status}>❌ Échec de connexion : {status.message}</Text>
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
+
+  async function handleSubmit() {
+    if (!supabase) return;
+    setError(null);
+    setLoading(true);
+    const { error } =
+      mode === 'inscription'
+        ? await supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { role: 'aide_menagere' } },
+          })
+        : await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) setError(error.message);
+  }
+
+  async function handleSignOut() {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+  }
+
+  if (user) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Espace aide-ménagère</Text>
+        <Text style={styles.status}>✅ Connecté en tant que {user.email}</Text>
+        <Pressable style={styles.button} onPress={handleSignOut}>
+          <Text style={styles.buttonText}>Se déconnecter</Text>
+        </Pressable>
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Espace aide-ménagère</Text>
+      <View style={styles.modeSwitch}>
+        <Pressable
+          style={[styles.modeButton, mode === 'inscription' && styles.modeButtonActive]}
+          onPress={() => setMode('inscription')}
+        >
+          <Text>S&apos;inscrire</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.modeButton, mode === 'connexion' && styles.modeButtonActive]}
+          onPress={() => setMode('connexion')}
+        >
+          <Text>Se connecter</Text>
+        </Pressable>
+      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Mot de passe"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      <Pressable style={styles.button} onPress={handleSubmit} disabled={loading}>
+        <Text style={styles.buttonText}>
+          {mode === 'inscription' ? "S'inscrire" : 'Se connecter'}
+        </Text>
+      </Pressable>
+      {error && <Text style={styles.error}>❌ {error}</Text>}
+      {mode === 'inscription' && (
+        <Text style={styles.hint}>
+          Si la confirmation par email est activée sur le projet Supabase, vérifie ta boîte mail
+          avant de pouvoir te connecter.
+        </Text>
       )}
       <StatusBar style="auto" />
     </View>
@@ -45,17 +124,61 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'center',
     padding: 24,
+    gap: 12,
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 12,
+    textAlign: 'center',
   },
   status: {
     marginTop: 8,
     textAlign: 'center',
+  },
+  modeSwitch: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  modeButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  modeButtonActive: {
+    backgroundColor: '#e6f4fe',
+    borderColor: '#3a8fd6',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    padding: 10,
+  },
+  button: {
+    backgroundColor: '#171717',
+    borderRadius: 6,
+    padding: 12,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  error: {
+    color: '#c0392b',
+    textAlign: 'center',
+  },
+  hint: {
+    fontSize: 12,
+    textAlign: 'center',
+    color: '#555',
   },
 });
