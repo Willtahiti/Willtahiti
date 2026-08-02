@@ -1,28 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import type { User } from '@supabase/supabase-js';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { AuthForm } from './components/AuthForm';
 import { getSupabaseClient } from './lib/supabaseClient';
 
-type Mode = 'inscription' | 'connexion';
+type Role = 'aide_menagere' | 'client';
 
 export default function App() {
   const supabase = getSupabaseClient();
-  const [mode, setMode] = useState<Mode>('inscription');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!supabase) return;
-    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-    return () => subscription.subscription.unsubscribe();
-  }, [supabase]);
+  const [role, setRole] = useState<Role | null>(null);
 
   if (!supabase) {
     return (
@@ -37,34 +23,16 @@ export default function App() {
     );
   }
 
-  async function handleSubmit() {
-    if (!supabase) return;
-    setError(null);
-    setLoading(true);
-    const { error } =
-      mode === 'inscription'
-        ? await supabase.auth.signUp({
-            email,
-            password,
-            options: { data: { role: 'aide_menagere' } },
-          })
-        : await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) setError(error.message);
-  }
-
-  async function handleSignOut() {
-    if (!supabase) return;
-    await supabase.auth.signOut();
-  }
-
-  if (user) {
+  if (!role) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Espace aide-ménagère</Text>
-        <Text style={styles.status}>✅ Connecté en tant que {user.email}</Text>
-        <Pressable style={styles.button} onPress={handleSignOut}>
-          <Text style={styles.buttonText}>Se déconnecter</Text>
+        <Text style={styles.title}>Willtahiti</Text>
+        <Text style={styles.status}>Tu es...</Text>
+        <Pressable style={styles.button} onPress={() => setRole('aide_menagere')}>
+          <Text style={styles.buttonText}>Une aide-ménagère</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={() => setRole('client')}>
+          <Text style={styles.buttonText}>Un(e) client(e)</Text>
         </Pressable>
         <StatusBar style="auto" />
       </View>
@@ -73,48 +41,13 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Espace aide-ménagère</Text>
-      <View style={styles.modeSwitch}>
-        <Pressable
-          style={[styles.modeButton, mode === 'inscription' && styles.modeButtonActive]}
-          onPress={() => setMode('inscription')}
-        >
-          <Text>S&apos;inscrire</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.modeButton, mode === 'connexion' && styles.modeButtonActive]}
-          onPress={() => setMode('connexion')}
-        >
-          <Text>Se connecter</Text>
-        </Pressable>
-      </View>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Mot de passe"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Pressable style={styles.button} onPress={handleSubmit} disabled={loading}>
-        <Text style={styles.buttonText}>
-          {mode === 'inscription' ? "S'inscrire" : 'Se connecter'}
-        </Text>
+      <Pressable onPress={() => setRole(null)}>
+        <Text style={styles.back}>‹ Retour</Text>
       </Pressable>
-      {error && <Text style={styles.error}>❌ {error}</Text>}
-      {mode === 'inscription' && (
-        <Text style={styles.hint}>
-          Si la confirmation par email est activée sur le projet Supabase, vérifie ta boîte mail
-          avant de pouvoir te connecter.
-        </Text>
-      )}
+      <AuthForm
+        role={role}
+        title={role === 'aide_menagere' ? 'Espace aide-ménagère' : 'Espace client'}
+      />
       <StatusBar style="auto" />
     </View>
   );
@@ -139,29 +72,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: 'center',
   },
-  modeSwitch: {
-    flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  modeButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#ccc',
-  },
-  modeButtonActive: {
-    backgroundColor: '#e6f4fe',
-    borderColor: '#3a8fd6',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 10,
-  },
   button: {
     backgroundColor: '#171717',
     borderRadius: 6,
@@ -172,13 +82,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  error: {
-    color: '#c0392b',
-    textAlign: 'center',
-  },
-  hint: {
-    fontSize: 12,
-    textAlign: 'center',
-    color: '#555',
+  back: {
+    color: '#3a8fd6',
+    marginBottom: 12,
   },
 });

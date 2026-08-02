@@ -52,6 +52,9 @@ export default async function Page() {
       <p>
         <a href="/aide-menagere/connexion">Espace aide-ménagère (inscription/connexion)</a>
       </p>
+      <p>
+        <a href="/client/connexion">Espace client (inscription/connexion)</a>
+      </p>
     </main>
   );
 }
