@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import type { User } from '@supabase/supabase-js';
+import type { SupabaseClient, User } from '@supabase/supabase-js';
 import { getSupabaseClient } from '../lib/supabaseClient';
 
 type Mode = 'inscription' | 'connexion';
 
 type Role = 'aide_menagere' | 'client';
 
-export function AuthForm({ role, title }: { role: Role; title: string }) {
+export function AuthForm({
+  role,
+  title,
+  renderLoggedIn,
+}: {
+  role: Role;
+  title: string;
+  renderLoggedIn?: (params: { supabase: SupabaseClient; user: User; onSignOut: () => void }) => React.ReactNode;
+}) {
   const supabase = getSupabaseClient();
   const [mode, setMode] = useState<Mode>('inscription');
   const [email, setEmail] = useState('');
@@ -58,6 +66,9 @@ export function AuthForm({ role, title }: { role: Role; title: string }) {
   }
 
   if (user) {
+    if (renderLoggedIn) {
+      return <>{renderLoggedIn({ supabase, user, onSignOut: handleSignOut })}</>;
+    }
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{title}</Text>

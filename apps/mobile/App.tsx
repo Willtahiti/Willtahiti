@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { AuthForm } from './components/AuthForm';
+import { TachesAideMenagere } from './components/TachesAideMenagere';
 import { getSupabaseClient } from './lib/supabaseClient';
 
 type Role = 'aide_menagere' | 'client';
@@ -47,6 +48,13 @@ export default function App() {
       <AuthForm
         role={role}
         title={role === 'aide_menagere' ? 'Espace aide-ménagère' : 'Espace client'}
+        renderLoggedIn={
+          role === 'aide_menagere'
+            ? ({ supabase, user, onSignOut }) => (
+                <TachesAideMenagere supabase={supabase} user={user} onSignOut={onSignOut} />
+              )
+            : undefined
+        }
       />
       <StatusBar style="auto" />
     </View>
