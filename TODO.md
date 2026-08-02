@@ -24,7 +24,7 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 ## Tâches
 
 - [x] API : créer un contrat de test avec des tâches verrouillées pour un client donné — script `backend/supabase/seed/seed_test_contrat.sql` (connexion Postgres directe, bypass RLS), pris deux emails déjà inscrits (client + aide-ménagère) et crée société + contrat + 3 tâches verrouillées. Testé de bout en bout sur un Postgres 16 local dans ce sandbox (migrations + trigger + seed) — voir `backend/README.md`
-- [ ] API : lister les tâches d'un client (verrouillées issues du contrat + libres)
+- [x] API : lister les tâches d'un client (verrouillées issues du contrat + libres) — couvert par la policy SELECT existante sur `taches` (`client_id = auth.uid()`, sans distinction verrouillée/libre) + le GRANT ajouté ci-dessus ; vérifié en testant le GRANT (section précédente)
 - [x] API : le client ajoute une tâche libre (texte) — policy RLS `client can insert own free tache` (migration `20260802130400_taches_write_policies.sql`) : le client ne peut créer une tâche libre que pour une aide-ménagère avec qui il a déjà une relation. Testé contre 4 tentatives de contournement (aide-ménagère sans relation, fausse tâche verrouillée, usurpation de client_id) — toutes rejetées
 - [ ] Écran web client : afficher les tâches verrouillées (non modifiables) et le formulaire d'ajout libre
 - [ ] Écran mobile aide-ménagère : afficher la liste complète des tâches d'un client (verrouillées + libres), avec statut
