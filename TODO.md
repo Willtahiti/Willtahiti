@@ -16,7 +16,7 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 - [x] Créer la table `societes` — migration `backend/supabase/migrations/20260802121716_create_societes_table.sql`, FK `users.societe_id` ajoutée, RLS (visible par ses membres)
 - [x] Créer la table `contrats` (societe_id, client_id, taches_incluses) — migration `backend/supabase/migrations/20260802121830_create_contrats_table.sql`, RLS (client voit les siens, société voit ceux de ses membres)
 - [x] Créer la table `taches` (client_id, aide_menagere_id, contrat_id, description, statut, verrouillee) — migration `backend/supabase/migrations/20260802121950_create_taches_table.sql`, contrainte verrouillee/contrat_id, RLS (client + aide-ménagère assignée)
-- [ ] Créer la table `messages` (conversation_id, expediteur_id, contenu_texte, photo_url, horodatage)
+- [x] Créer la table `messages` (conversation_id, expediteur_id, contenu_texte, photo_url, horodatage) — migration `backend/supabase/migrations/20260802122055_create_messages_table.sql` ; `conversation_id` sans FK pour l'instant (table `conversations` à créer dans la tâche suivante), RLS limitée à l'expéditeur en attendant
 - [ ] Implémenter inscription/connexion aide-ménagère
 - [ ] Implémenter inscription/connexion client
 - [ ] Écrire les règles d'accès (un client ne voit que ses tâches/messages, une aide-ménagère ne voit que ceux qui lui sont assignés)
