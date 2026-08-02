@@ -38,5 +38,6 @@ Les migrations SQL vivent dans `supabase/migrations/` (créées via `npx supabas
 - `20260802121830_create_contrats_table.sql` — table `contrats` (societe_id, client_id, taches_incluses[])
 - `20260802121950_create_taches_table.sql` — table `taches` (client_id, aide_menagere_id, contrat_id, description, statut, verrouillee)
 - `20260802122055_create_messages_table.sql` — table `messages` (conversation_id, expediteur_id, contenu_texte, photo_url, horodatage) ; `conversation_id` sans FK en attendant la table `conversations`
+- `20260802122500_create_handle_new_user_trigger.sql` — trigger sur `auth.users` qui crée automatiquement la ligne `public.users` avec le rôle passé dans les métadonnées d'inscription
 
-Toutes les tables du modèle simplifié (voir ARCHITECTURE.md) sont créées. La suite du TODO porte sur l'auth, les règles d'accès complètes et la messagerie temps réel.
+Toutes les tables du modèle simplifié (voir ARCHITECTURE.md) sont créées. La suite du TODO porte sur l'auth restante, les règles d'accès complètes et la messagerie temps réel.

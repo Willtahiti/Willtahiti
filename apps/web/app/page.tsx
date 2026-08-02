@@ -49,6 +49,9 @@ export default async function Page() {
       {status.state === "error" && (
         <p>❌ Échec de connexion : {status.message}</p>
       )}
+      <p>
+        <a href="/aide-menagere/connexion">Espace aide-ménagère (inscription/connexion)</a>
+      </p>
     </main>
   );
 }
