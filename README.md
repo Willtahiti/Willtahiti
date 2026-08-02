@@ -12,7 +12,7 @@ Application de mise en relation pour sociétés de ménage (mobile + web). Trois
 ```
 apps/
   web/      # Interface web (Next.js, App Router, TypeScript)
-  mobile/   # Interface mobile (React Native) — squelette à venir
+  mobile/   # Interface mobile (Expo, React Native, TypeScript)
 backend/    # Backend managé (type Supabase) : config, migrations, fonctions
 ```
 
@@ -27,9 +27,20 @@ npm run dev
 
 La page d'accueil affiche le statut de connexion au backend Supabase.
 
+## Lancer le mobile en local
+
+```bash
+cd apps/mobile
+npm install
+cp .env.example .env   # puis renseigner les valeurs Supabase
+npm start
+```
+
+L'écran d'accueil affiche le statut de connexion au backend Supabase.
+
 ## Variables d'environnement
 
-Chaque app a un `.env.example` documentant les variables Supabase attendues (`apps/web/.env.example`, `apps/mobile/.env.example`). Copier vers `.env.local` (web) ou `.env` (mobile) et remplir avec les valeurs du projet Supabase (local via `supabase start`, ou celui du dashboard une fois le projet hébergé créé — voir `backend/README.md`).
+Chaque app a un `.env.example` documentant les variables Supabase attendues (`apps/web/.env.example` avec le préfixe `NEXT_PUBLIC_`, `apps/mobile/.env.example` avec le préfixe `EXPO_PUBLIC_`). Copier vers `.env.local` (web) ou `.env` (mobile) et remplir avec les valeurs du projet Supabase hébergé (dashboard Supabase, voir `backend/README.md`).
 
 ## Stack
 

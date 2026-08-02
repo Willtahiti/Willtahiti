@@ -5,10 +5,10 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 ## Setup
 
 - [x] Initialiser le repo (structure web + mobile + backend managé), README minimal
-- [ ] Créer le projet backend managé (auth, base de données, storage)
-- [x] Configurer l'environnement local (variables d'env, connexion au backend managé) — `.env.example` en place ; connexion réelle en attente du projet Supabase hébergé (tâche précédente)
+- [x] Créer le projet backend managé (auth, base de données, storage) — projet Supabase hébergé créé, URL/clé anonyme fournies
+- [x] Configurer l'environnement local (variables d'env, connexion au backend managé) — `.env.local`/`.env` renseignés (web et mobile) avec les valeurs du projet hébergé ; connexion live non vérifiable depuis le sandbox de dev (accès sortant à `supabase.co` bloqué par la politique réseau de l'environnement), à confirmer en local
 - [x] Mettre en place le squelette web (Next.js) qui affiche une page de test connectée au backend
-- [ ] Mettre en place le squelette mobile (React Native) qui affiche un écran de test connecté au backend
+- [x] Mettre en place le squelette mobile (React Native) qui affiche un écran de test connecté au backend — squelette Expo (TypeScript) dans `apps/mobile`
 
 ## Modèle de données & auth
 
