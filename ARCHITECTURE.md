@@ -17,7 +17,7 @@ Le web et le mobile partagent la même logique métier (stack JS/TS commune : Ne
 
 ## Flux de données
 
-1. **Comptes & tâches** : l'aide-ménagère et le client s'authentifient via le backend managé. Le client crée des tâches (liste prédéfinie + texte libre), stockées directement en base managée.
+1. **Comptes & tâches** : l'aide-ménagère et le client s'authentifient via le backend managé (le rôle est passé en métadonnées à l'inscription et recopié automatiquement dans la table `users` par un trigger). Le client crée des tâches (liste prédéfinie + texte libre), stockées directement en base managée.
 2. **Messagerie** : texte et photos transitent en temps réel via le backend managé (aucun passage par le homelab — c'est la partie la plus sensible et la plus critique en disponibilité).
 3. **Demande de produits** : l'aide-ménagère envoie une demande, stockée en base managée. Cette demande déclenche un appel à la passerelle API vers le service de scraping (homelab), qui renvoie une liste de produits recommandés, réinjectée en base managée pour affichage au client.
 4. **Tutoriels DIY** : pipeline asynchrone, non déclenché en temps réel par un utilisateur. Le service tourne sur le homelab, génère le contenu, et le publie dans le backend managé via la passerelle API pour être consultable dans l'app.
@@ -29,7 +29,8 @@ Le web et le mobile partagent la même logique métier (stack JS/TS commune : Ne
 - `users` (id, rôle: aide_menagere / gerant / client, societe_id nullable pour un indépendant)
 - `contrats` (id, societe_id, client_id, taches_incluses[]) — définit les tâches prévues au contrat, verrouillées par défaut pour ce client
 - `taches` (id, client_id, aide_menagere_id, contrat_id nullable, description, statut, verrouillee: bool) — `verrouillee=true` et `contrat_id` renseigné pour les tâches issues du contrat ; `verrouillee=false` et `contrat_id=null` pour les tâches ajoutées librement par le client
-- `messages` (id, conversation_id, expediteur_id, contenu_texte, photo_url, horodatage)
+- `conversations` (id, client_id, aide_menagere_id) — table ajoutée pendant l'implémentation du jalon 1 (absente de la version initiale de ce document) ; relie une paire client/aide-ménagère, créée uniquement si une relation existe déjà entre eux (via `taches`)
+- `messages` (id, conversation_id, expediteur_id, contenu_texte, photo_url, horodatage) — `photo_url` est un chemin dans le bucket storage privé `message-photos`, pas une URL publique ; résolu en URL signée à l'affichage
 - `demandes_produits` (id, aide_menagere_id, client_id, statut)
 - `produits_recommandes` (id, demande_id, nom, marque, score_label, source_url)
 - `tutoriels` (id, titre, contenu_texte, video_url, source_url, date_generation)
@@ -42,6 +43,8 @@ Le web et le mobile partagent la même logique métier (stack JS/TS commune : Ne
 3. **Communication homelab ↔ cloud managé uniquement via une passerelle API authentifiée**, jamais d'accès direct à la base de données managée depuis l'extérieur.
 4. **Une seule stack frontend (JS/TS) pour web et mobile**, pour limiter la charge de maintenance en solo.
 5. **Ordre d'implémentation aligné sur la priorité utilisateurs de la SPEC** : comptes + tâches + messagerie pour l'aide-ménagère d'abord, dashboard gérant ensuite, expérience client en dernier.
+6. **Accès aux données via Row Level Security (RLS) sur chaque table**, sans couche API intermédiaire pour les tâches/messages/conversations : le web et le mobile interrogent directement le backend managé, RLS fait respecter les règles d'accès (un client ne voit que ses données, une aide-ménagère que celles qui lui sont assignées). Testé par simulation d'attaques croisées entre comptes (voir TODO.md, clôture du jalon 1).
+7. **Simplification v1 : une seule relation client ↔ aide-ménagère par client.** Les écrans "tâche libre" et "messagerie" déduisent l'aide-ménagère concernée à partir d'une tâche existante plutôt que via un vrai mécanisme d'assignation/sélection. À revoir si un client doit un jour interagir avec plusieurs aides-ménagères.
 
 ## Risques majeurs
 

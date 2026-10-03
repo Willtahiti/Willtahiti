@@ -66,3 +66,5 @@ Ces montants sont une hypothèse de départ, pas un résultat validé — à tes
 ## Critères de réussite v1
 
 À définir précisément lors du prochain échange — proposition de départ : une aide-ménagère peut recevoir une liste de tâches, échanger avec le client (texte + photo), envoyer une demande de produits, et consulter au moins un tutoriel DIY généré par IA, de bout en bout sur mobile et web.
+
+**Écart connu (jalon 1, fondations)** : l'échange de photos n'est pour l'instant possible que du client (web) vers l'aide-ménagère (mobile), pas dans l'autre sens — l'envoi de photo depuis le mobile demanderait d'ajouter la dépendance `expo-image-picker`, non ajoutée pour l'instant (voir TODO.md). Le reste du critère (tâches, texte, bout en bout mobile/web) est couvert.
