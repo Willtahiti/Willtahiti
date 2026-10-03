@@ -42,6 +42,6 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 
 ## Clôture du jalon
 
-- [ ] Repasser sur les règles d'accès (aucune fuite de données entre clients/aides-ménagères différents)
+- [x] Repasser sur les règles d'accès (aucune fuite de données entre clients/aides-ménagères différents) — audit complet sur Postgres local : revue de toutes les tables (RLS activée sur les 6 tables, policies et GRANT cohérents avec le design), puis 9 scénarios d'attaque avec deux foyers (A et B) complètement indépendants — tâches, contrats, conversations, messages, photos d'un foyer invisibles à l'autre ; tentative d'insertion de tâche sans relation rejetée ; modification d'un contrat tiers bloquée au niveau GRANT (même pas d'RLS à évaluer) ; utilisateur sans compte et gérant sans société ne voient rien. Tous les scénarios se comportent comme attendu, aucune fuite trouvée
 - [ ] Vérifier que le parcours complet fonctionne sans bug bloquant sur web et mobile
 - [ ] Mettre à jour SPEC.md et ARCHITECTURE.md si des écarts sont apparus pendant le développement
