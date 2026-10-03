@@ -1,13 +1,40 @@
 import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 import {
   getOrCreateConversation,
+  getPhotoSignedUrl,
   listMessages,
   sendMessageTexte,
   subscribeToMessages,
   type Message,
 } from '../lib/messages';
+
+function MessageBubble({
+  supabase,
+  message,
+  mine,
+}: {
+  supabase: SupabaseClient;
+  message: Message;
+  mine: boolean;
+}) {
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!message.photo_url) return;
+    getPhotoSignedUrl(supabase, message.photo_url).then(({ url }) => setPhotoUrl(url));
+  }, [supabase, message.photo_url]);
+
+  return (
+    <View style={mine ? styles.bubbleMine : styles.bubbleTheirs}>
+      {message.contenu_texte && <Text>{message.contenu_texte}</Text>}
+      {message.photo_url && photoUrl && (
+        <Image source={{ uri: photoUrl }} style={styles.photo} />
+      )}
+    </View>
+  );
+}
 
 export function ConversationAideMenagere({
   supabase,
@@ -72,9 +99,7 @@ export function ConversationAideMenagere({
         data={messages}
         keyExtractor={(m) => m.id}
         renderItem={({ item }) => (
-          <View style={item.expediteur_id === user.id ? styles.bubbleMine : styles.bubbleTheirs}>
-            <Text>{item.contenu_texte}</Text>
-          </View>
+          <MessageBubble supabase={supabase} message={item} mine={item.expediteur_id === user.id} />
         )}
       />
       {conversationId && (
@@ -121,6 +146,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     marginVertical: 4,
+  },
+  photo: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+    marginTop: 4,
   },
   inputRow: {
     flexDirection: 'row',

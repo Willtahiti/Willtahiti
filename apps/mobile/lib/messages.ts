@@ -51,6 +51,17 @@ export async function sendMessageTexte(
   });
 }
 
+// photo_url stocke le chemin dans le bucket privé "message-photos" (pas une URL publique) —
+// il faut une URL signée pour l'afficher. L'envoi de photo depuis le mobile n'est pas encore
+// implémenté (nécessiterait expo-image-picker, voir TODO.md) ; seule la réception/affichage
+// d'une photo envoyée depuis le web est couverte ici.
+export async function getPhotoSignedUrl(supabase: SupabaseClient, path: string) {
+  const { data, error } = await supabase.storage
+    .from('message-photos')
+    .createSignedUrl(path, 60 * 60);
+  return { url: data?.signedUrl ?? null, error };
+}
+
 export function subscribeToMessages(
   supabase: SupabaseClient,
   conversationId: string,
