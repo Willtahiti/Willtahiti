@@ -36,8 +36,8 @@ Objectif du jalon : un aller-retour complet fonctionne — un client voit ses t�
 - [x] Créer une conversation liée à une relation client ↔ aide-ménagère — migration `20260802131500_create_conversations_table.sql` : table `conversations`, RLS (participants uniquement, création limitée aux paires ayant déjà une relation via `taches`), FK + RLS complète sur `messages`. Testé sur Postgres local : 9 scénarios (création légitime + usurpation, envoi/lecture croisée, fuite vers un tiers, usurpation d'expéditeur) — tous corrects
 - [x] Envoi/réception de messages texte en temps réel (web) — migration `20260802132000_enable_realtime_messages.sql` (publication realtime, testée sur Postgres local), `apps/web/lib/messages.ts` + `apps/web/app/client/conversation/page.tsx` (récupère/crée la conversation avec l'aide-ménagère liée, liste + envoi + abonnement `postgres_changes`). Build/lint/typecheck OK
 - [x] Envoi/réception de messages texte en temps réel (mobile) — `apps/mobile/lib/messages.ts` + `apps/mobile/components/ConversationAideMenagere.tsx`, onglets Tâches/Messages via `apps/mobile/components/EspaceAideMenagere.tsx`. Typecheck OK ; rendu non vérifié visuellement (réseau sandbox bloqué, comme les écrans mobiles précédents)
-- [ ] Upload et affichage d'une photo dans la conversation (web)
-- [ ] Upload et affichage d'une photo dans la conversation (mobile)
+- [x] Upload et affichage d'une photo dans la conversation (web) — migration `20260802132500_create_message_photos_bucket.sql` (bucket privé `message-photos`, policies limitées aux deux participants, testées sur Postgres local avec un stub du schéma storage). `apps/web/lib/messages.ts` (sendMessagePhoto, getPhotoSignedUrl) + `apps/web/app/client/conversation/page.tsx` (input file, affichage via URL signée). Build/lint/typecheck OK
+- [ ] Upload et affichage d'une photo dans la conversation (mobile) — en attente : nécessite `expo-image-picker` (nouvelle dépendance), refusée pour l'instant par @Willtahiti. À reprendre si besoin change d'avis.
 - [ ] Test manuel bout en bout : un message texte + une photo envoyés côté client apparaissent côté aide-ménagère, et inversement
 
 ## Clôture du jalon
