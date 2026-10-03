@@ -51,6 +51,29 @@ export async function sendMessageTexte(
   });
 }
 
+// photo_url stocke le chemin dans le bucket privé "message-photos" (pas une URL publique) —
+// il faut une URL signée (getPhotoSignedUrl) pour l'afficher.
+export async function sendMessagePhoto(
+  supabase: SupabaseClient,
+  params: { conversationId: string; expediteurId: string; file: File },
+) {
+  const path = `${params.conversationId}/${crypto.randomUUID()}-${params.file.name}`;
+  const upload = await supabase.storage.from("message-photos").upload(path, params.file);
+  if (upload.error) return { error: upload.error };
+  return supabase.from("messages").insert({
+    conversation_id: params.conversationId,
+    expediteur_id: params.expediteurId,
+    photo_url: path,
+  });
+}
+
+export async function getPhotoSignedUrl(supabase: SupabaseClient, path: string) {
+  const { data, error } = await supabase.storage
+    .from("message-photos")
+    .createSignedUrl(path, 60 * 60);
+  return { url: data?.signedUrl ?? null, error };
+}
+
 export function subscribeToMessages(
   supabase: SupabaseClient,
   conversationId: string,
